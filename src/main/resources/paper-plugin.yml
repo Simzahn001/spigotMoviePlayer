@@ -1,7 +1,0 @@
-name: spigotMoviePlayer
-version: '${project.version}'
-main: me.simzahn.spigotmovieplayer.Main
-api-version: '1.20'
-prefix: Movie Player
-authors: [Simzahn]
-description: A plugin to play *.mp4 video files in minecraft via pixel art.
