@@ -44,6 +44,10 @@
                                     <pattern>io.papermc.paper</pattern>
                                     <shadedPattern>me.simzahn.libs.io.papermc.paper</shadedPattern>
                                 </relocation>
+                                <relocation>
+                                    <pattern>org.bytedeco</pattern>
+                                    <shadedPattern>me.simzahn.libs.org.bytedeco</shadedPattern>
+                                </relocation>
                             </relocations>
                             <createDependencyReducedPom>false</createDependencyReducedPom>
                         </configuration>
@@ -82,6 +86,11 @@
             <artifactId>junit-jupiter-engine</artifactId>
             <version>5.9.1</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.bytedeco</groupId>
+            <artifactId>javacv</artifactId>
+            <version>1.5.9</version>
         </dependency>
     </dependencies>
 </project>

@@ -1,6 +1,11 @@
 package me.simzahn.spigotmovieplayer;
 
+import me.simzahn.spigotmovieplayer.util.ConfigUtils;
+import org.bukkit.configuration.file.YamlConfiguration;
+import org.jetbrains.annotations.NotNull;
+
 import java.io.File;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -9,10 +14,30 @@ public class Movie {
 
     private final String name;
     private final File file;
+    private final YamlConfiguration config;
 
-    public Movie(String name, File file) {
-        this.name = name;
+    public Movie(@NotNull String name, @NotNull File file) {
+
+        if (!file.exists()) {
+            throw new IllegalArgumentException("The given file does not exist.");
+        }
+        if (!file.isFile()) {
+            throw new IllegalArgumentException("The given file is not a file.");
+        }
+        if (!file.getName().endsWith(".mp4")) {
+            throw new IllegalArgumentException("The given file is not a mp4 file.");
+        }
+
         this.file = file;
+
+        this.config = ConfigUtils.loadNewConfig(Path.of(file.getPath() + ".yml"));
+
+        String configName = config.getString("name");
+        if (configName != null && !configName.equals("")) {
+            this.name = config.getString("name");
+        } else {
+            this.name = name;
+        }
     }
 
     public String getName() {
@@ -21,6 +46,23 @@ public class Movie {
 
     public File getFile() {
         return file;
+    }
+
+    public YamlConfiguration getConfig() {
+        return config;
+    }
+
+    /**
+     * Check if the movie is prepared.
+     * @return True if the movie is prepared.
+     */
+    public boolean isPrepared() {
+        boolean isPrepared = config.getBoolean("prepared", false);
+        if (!isPrepared) {
+            config.set("prepared", false);
+            ConfigUtils.saveConfig(config);
+        }
+        return isPrepared;
     }
 
     /**
