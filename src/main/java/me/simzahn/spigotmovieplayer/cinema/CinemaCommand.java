@@ -1,7 +1,10 @@
 package me.simzahn.spigotmovieplayer.cinema;
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.TextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -27,10 +30,7 @@ public class CinemaCommand implements CommandExecutor, TabExecutor {
         }
 
         if (args.length == 0) {
-            sender.sendMessage(Component.text(
-                    "Usage: /cinema <create> <name of cinema>",
-                    TextColor.color(122, 0, 3)
-            ));
+            sendHelpMessage(sender);
             return true;
         }else if (args.length == 1) {
             if (args[0].equalsIgnoreCase("create")) {
@@ -39,6 +39,41 @@ public class CinemaCommand implements CommandExecutor, TabExecutor {
                         TextColor.color(122, 0, 3)
                 ));
                 return true;
+            } else if (args[0].equals("list")) {
+
+                sender.sendMessage(Component.text(
+                        "-----------<",
+                        TextColor.color(83, 117, 223)
+                ).append(Component.text(
+                        "Cinemas",
+                        TextColor.color(0, 12, 223),
+                        TextDecoration.BOLD
+                )).append(Component.text(
+                        ">-----------",
+                        TextColor.color(83, 117, 223)
+                )));
+
+                for (Cinema cinema : Cinema.getCinemas()) {
+                    sender.sendMessage(Component.text(
+                            " - " + cinema.getName(),
+                            TextColor.color(255, 255, 255)
+                    ).clickEvent(ClickEvent.callback(
+                            (player) -> {
+                                if (player instanceof Player) {
+                                    ((Player) player).teleport(cinema.getTeleportLocation());
+                                }
+                            }
+                    )).hoverEvent(HoverEvent.showText(Component.text(
+                            "Click to teleport to the cinema!"
+                    )
+                    )));
+                }
+
+                sender.sendMessage(Component.text(
+                        "-------------------------------",
+                        TextColor.color(83, 117, 223)
+                ));
+
             }
         }else if (args.length == 2) {
             if (args[0].equalsIgnoreCase("create")) {
@@ -53,6 +88,14 @@ public class CinemaCommand implements CommandExecutor, TabExecutor {
                     return true;
                 }
 
+                if (Cinema.isNameOccupied(name)) {
+                    sender.sendMessage(Component.text(
+                            "This name is already occupied.",
+                            TextColor.color(122, 0, 3)
+                    ));
+                    return true;
+                }
+
                 new CinemaBuilder((Player) sender, name);
                 return true;
             }
@@ -61,6 +104,17 @@ public class CinemaCommand implements CommandExecutor, TabExecutor {
 
         return false;
 
+    }
+
+    private void sendHelpMessage(CommandSender sender) {
+        sender.sendMessage(Component.text(
+                "Usage: /cinema <create> <name of cinema>",
+                TextColor.color(122, 0, 3)
+        ));
+        sender.sendMessage(Component.text(
+                "Usage: /cinema <list>",
+                TextColor.color(122, 0, 3)
+        ));
     }
 
     @Override
@@ -77,6 +131,7 @@ public class CinemaCommand implements CommandExecutor, TabExecutor {
         } else if (args.length == 1) {
 
             list.add("create");
+            list.add("list");
 
         }
 

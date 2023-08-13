@@ -1,4 +1,4 @@
-import me.simzahn.spigotmovieplayer.pixelStackerRequests.ImageRequest;
+import me.simzahn.spigotmovieplayer.moviePreparing.pixelStackerRequests.ImageRequest;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;

@@ -1,5 +1,6 @@
 package me.simzahn.spigotmovieplayer;
 
+import me.simzahn.spigotmovieplayer.cinema.Cinema;
 import me.simzahn.spigotmovieplayer.cinema.CinemaCommand;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -17,11 +18,15 @@ public final class Main extends JavaPlugin {
         plugin.getCommand("cinema").setTabCompleter(new CinemaCommand());
 
         this.pluginManager = getServer().getPluginManager();
+
+        Cinema.loadAllCinemasFromConfig();
     }
 
     @Override
     public void onDisable() {
         // Plugin shutdown logic
+        Cinema.safeAllCinemasToConfig();
+        System.out.println("Cinemas saved");
     }
 
     public static Main getPlugin() {

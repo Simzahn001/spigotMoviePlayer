@@ -1,4 +1,4 @@
-package me.simzahn.spigotmovieplayer.pixelStackerRequests;
+package me.simzahn.spigotmovieplayer.moviePreparing.pixelStackerRequests;
 
 import org.apache.hc.client5.http.entity.mime.FileBody;
 import org.apache.hc.client5.http.entity.mime.HttpMultipartMode;
