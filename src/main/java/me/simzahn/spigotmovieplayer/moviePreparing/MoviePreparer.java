@@ -1,6 +1,8 @@
-package me.simzahn.spigotmovieplayer;
+package me.simzahn.spigotmovieplayer.moviePreparing;
 
-import me.simzahn.spigotmovieplayer.cinema.AsynchronousFrameTransposer;
+import me.simzahn.spigotmovieplayer.Main;
+import me.simzahn.spigotmovieplayer.Movie;
+import me.simzahn.spigotmovieplayer.Resolution;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;

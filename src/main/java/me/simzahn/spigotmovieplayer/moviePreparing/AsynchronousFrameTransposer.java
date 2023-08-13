@@ -1,6 +1,5 @@
-package me.simzahn.spigotmovieplayer.cinema;
+package me.simzahn.spigotmovieplayer.moviePreparing;
 
-import me.simzahn.spigotmovieplayer.FrameConverter;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bytedeco.javacv.Frame;
 

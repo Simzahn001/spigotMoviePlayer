@@ -1,6 +1,7 @@
-package me.simzahn.spigotmovieplayer;
+package me.simzahn.spigotmovieplayer.moviePreparing;
 
-import me.simzahn.spigotmovieplayer.pixelStackerRequests.ImageRequest;
+import me.simzahn.spigotmovieplayer.Main;
+import me.simzahn.spigotmovieplayer.moviePreparing.pixelStackerRequests.ImageRequest;
 import org.bytedeco.javacv.Frame;
 import org.bytedeco.javacv.Java2DFrameUtils;
 
