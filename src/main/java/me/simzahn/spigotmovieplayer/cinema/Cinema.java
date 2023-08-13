@@ -1,6 +1,6 @@
 package me.simzahn.spigotmovieplayer.cinema;
 
-import me.simzahn.spigotmovieplayer.Main;
+import me.simzahn.spigotmovieplayer.Resolution;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 
@@ -94,11 +94,34 @@ public class Cinema {
     }
 
     /**
+     * Returns the resolution of the cinema.
+     * @return Resolution of the cinema.
+     */
+    public Resolution getResolution() {
+
+        int height = corner1.getY() - corner2.getY();
+
+        int width;
+        if (front == BlockFace.NORTH || front == BlockFace.SOUTH) {
+            width = corner1.getZ() - corner2.getZ();
+        } else {
+            width = corner1.getX() - corner2.getX();
+        }
+
+        height = Math.abs(height);
+        width = Math.abs(width);
+
+        return new Resolution(width, height);
+
+    }
+
+    /**
      *
      * @return
      */
     public static List<Cinema> getCinemas() {
         return new ArrayList<>(cinemas);
     }
+
 
 }

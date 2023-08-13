@@ -53,16 +53,32 @@ public class Movie {
     }
 
     /**
-     * Check if the movie is prepared.
-     * @return True if the movie is prepared.
+     * Get a list with all resolutions, which are prepared for this movie.
+     * The resolutions are stored in the config file. The folder containing the .schematic files is
+     * {pluginFolder}/movies/{movieName}/{resolution}
+     * @return A list with all resolutions, which are prepared for this movie.
      */
-    public boolean isPrepared() {
-        boolean isPrepared = config.getBoolean("prepared", false);
-        if (!isPrepared) {
-            config.set("prepared", false);
-            ConfigUtils.saveConfig(config);
-        }
-        return isPrepared;
+    public List<Resolution> getPreparedResolutions() {
+
+        return this.config.getStringList("resolutions").stream()
+                .map(Resolution::new)
+                .toList();
+
+    }
+
+    /**
+     * Add a resolution to the list of prepared resolutions. <b>Only do this if the preparation of this movie is finished
+     * and the folder with all the files exists!</b>
+     * @param resolution The resolution to add.
+     */
+    public void addResolution(Resolution resolution) {
+
+        List<String> resolutions = this.config.getStringList("resolutions");
+        resolutions.add(resolution.toString());
+        this.config.set("resolutions", resolutions);
+
+        ConfigUtils.saveConfig(this.config);
+
     }
 
     /**
@@ -94,7 +110,7 @@ public class Movie {
         for (File file : files) {
             if (file.isFile()) {
                 if (file.getName().endsWith(".mp4")) {
-                    movies.add(new Movie(file.getName(), file));
+                    movies.add(new Movie(file.getName().replace(".mp4", ""), file));
                 }
             }
         }

@@ -1,6 +1,10 @@
 package me.simzahn.spigotmovieplayer;
 
-import me.simzahn.spigotmovieplayer.util.ConfigUtils;
+import me.simzahn.spigotmovieplayer.cinema.AsynchronousFrameTransposer;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextColor;
+import net.kyori.adventure.text.format.TextDecoration;
+import org.bukkit.Bukkit;
 import org.bytedeco.javacv.Frame;
 import org.bytedeco.javacv.FrameGrabber;
 import org.bytedeco.javacv.OpenCVFrameConverter;
@@ -8,13 +12,13 @@ import org.opencv.videoio.VideoCapture;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.nio.file.Path;
 
 public class MoviePreparer {
 
     private final Movie movie;
 
-    private final int width;
-    private final int height;
+    private final Resolution resolution;
 
     private final int fps;
 
@@ -32,8 +36,7 @@ public class MoviePreparer {
 
     public MoviePreparer(Movie movie, int width, int height, int fps) {
         this.movie = movie;
-        this.width = width;
-        this.height = height;
+        this.resolution = new Resolution(width, height);
         this.fps = fps;
 
         //start the video capture
@@ -50,15 +53,31 @@ public class MoviePreparer {
             return;
         }
 
-        logTotalFrameCountToConfig();
+        FrameConverter frameConverter = new FrameConverter(this.resolution.getWidth(), this.resolution.getHeight());
+        Path path = Path.of(
+            Main.getPlugin().getDataFolder().getPath() +
+            "/" + "converted" +
+            "/" + this.movie.getName() +
+            "/" + this.resolution.toString()
+        );
 
         while (next()) {
 
-            //@TODO send image to POST request to retrieve pixel art
+            //this will create the .schematic file asynchronously
+            new AsynchronousFrameTransposer(
+                    frameConverter,
+                    this.grabber.getFrameNumber(),
+                    this.frame,
+                    path
+            ).runTaskAsynchronously(Main.getPlugin());
 
         }
 
-
+        Bukkit.broadcast(Component.text(
+               "Finished converting " + this.movie.getName() + " to Resolution " + this.resolution.toString() + "!",
+                TextColor.color(33, 255, 0),
+                TextDecoration.BOLD
+        ));
 
         videoCapture.release();
         grabber.stop();
@@ -142,12 +161,6 @@ public class MoviePreparer {
     private boolean isAtLastFrame() {
         return this.grabber.getLengthInFrames() >= this.grabber.getFrameNumber();
     }
-
-    private void logTotalFrameCountToConfig() {
-        this.movie.getConfig().set("totalFrames", this.grabber.getLengthInFrames());
-        ConfigUtils.saveConfig(this.movie.getConfig());
-    }
-
 
 
     private static double round(double value, int places) {
