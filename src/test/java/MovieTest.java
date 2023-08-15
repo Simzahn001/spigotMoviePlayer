@@ -1,4 +1,4 @@
-import me.simzahn.spigotmovieplayer.Movie;
+import me.simzahn.spigotmovieplayer.movie.Movie;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;

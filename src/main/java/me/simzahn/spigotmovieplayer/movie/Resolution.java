@@ -1,4 +1,4 @@
-package me.simzahn.spigotmovieplayer;
+package me.simzahn.spigotmovieplayer.movie;
 
 public class Resolution {
 
