@@ -1,4 +1,4 @@
-package me.simzahn.spigotmovieplayer;
+package me.simzahn.spigotmovieplayer.movie;
 
 import me.simzahn.spigotmovieplayer.util.ConfigUtils;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -16,6 +16,8 @@ public class Movie {
     private final File file;
     private final YamlConfiguration config;
 
+    private static final List<Movie> movies = new ArrayList<>();
+
     public Movie(@NotNull String name, @NotNull File file) {
 
         if (!file.exists()) {
@@ -30,7 +32,7 @@ public class Movie {
 
         this.file = file;
 
-        this.config = ConfigUtils.loadNewConfig(Path.of(file.getPath() + ".yml"));
+        this.config = ConfigUtils.loadNewConfig(Path.of(file.getPath().replace(".mp4", "") + ".yml"));
 
         String configName = config.getString("name");
         if (configName != null && !configName.equals("")) {
@@ -38,6 +40,8 @@ public class Movie {
         } else {
             this.name = name;
         }
+
+        movies.add(this);
     }
 
     public String getName() {
@@ -92,7 +96,11 @@ public class Movie {
     public static Optional<List<Movie>> loadAllMovies(File directory) {
 
         // Check if the given file is a directory and exists.
-        if (!directory.exists() || !directory.isDirectory()) {
+        if (!directory.isDirectory()) {
+            return Optional.empty();
+        }
+        if (!directory.exists()) {
+            directory.mkdirs();
             return Optional.empty();
         }
 
@@ -118,6 +126,14 @@ public class Movie {
         return Optional.of(movies);
     }
 
+    public static Optional<Movie> getMovie(String name) {
+        return movies.stream()
+                .filter(movie -> movie.getName().equals(name))
+                .findFirst();
+    }
 
+    public static List<Movie> getMovies() {
+        return new ArrayList<>(movies);
+    }
 
 }

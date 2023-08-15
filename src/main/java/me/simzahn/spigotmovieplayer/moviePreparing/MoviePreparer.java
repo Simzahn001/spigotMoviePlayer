@@ -1,16 +1,14 @@
 package me.simzahn.spigotmovieplayer.moviePreparing;
 
 import me.simzahn.spigotmovieplayer.Main;
-import me.simzahn.spigotmovieplayer.Movie;
-import me.simzahn.spigotmovieplayer.Resolution;
+import me.simzahn.spigotmovieplayer.movie.Movie;
+import me.simzahn.spigotmovieplayer.movie.Resolution;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
 import org.bytedeco.javacv.Frame;
 import org.bytedeco.javacv.FrameGrabber;
-import org.bytedeco.javacv.OpenCVFrameConverter;
-import org.opencv.videoio.VideoCapture;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -24,14 +22,11 @@ public class MoviePreparer {
 
     private final int fps;
 
-    private final VideoCapture videoCapture;
-
     private int baseFrameSkip;
     private int adjustFrameSkip;
     private int adjustFrameSkipCounter = 0;
 
     private FrameGrabber grabber;
-    private final OpenCVFrameConverter.ToMat converter = new OpenCVFrameConverter.ToMat();
 
     private Frame frame;
 
@@ -40,20 +35,16 @@ public class MoviePreparer {
         this.movie = movie;
         this.resolution = new Resolution(width, height);
         this.fps = fps;
-
-        //start the video capture
-        this.videoCapture = new VideoCapture();
-        this.videoCapture.open(this.movie.getFile().getAbsolutePath());
     }
 
-    public void prepare() throws FrameGrabber.Exception {
-
-        retrieveFPSRatios();
+    public void prepare() {
 
         if (!setupFrameGrabber()) {
             Main.getPlugin().getLogger().warning("The Frame Grabber was not set up correctly!");
             return;
         }
+
+        retrieveFPSRatios();
 
         FrameConverter frameConverter = new FrameConverter(this.resolution.getWidth(), this.resolution.getHeight());
         Path path = Path.of(
@@ -63,12 +54,15 @@ public class MoviePreparer {
             "/" + this.resolution.toString()
         );
 
+        int totalFrames = this.grabber.getLengthInFrames();
+
         while (next()) {
 
             //this will create the .schematic file asynchronously
             new AsynchronousFrameTransposer(
                     frameConverter,
                     this.grabber.getFrameNumber(),
+                    totalFrames,
                     this.frame,
                     path
             ).runTaskAsynchronously(Main.getPlugin());
@@ -81,8 +75,11 @@ public class MoviePreparer {
                 TextDecoration.BOLD
         ));
 
-        videoCapture.release();
-        grabber.stop();
+        try {
+            grabber.stop();
+        } catch (FrameGrabber.Exception e) {
+            throw new RuntimeException(e);
+        }
 
     }
 
@@ -144,7 +141,7 @@ public class MoviePreparer {
     private void retrieveFPSRatios() {
 
         //retrieve fps of the video
-        double mp4Fps = this.videoCapture.get(5);
+        double mp4Fps = this.grabber.getFrameRate();
 
         double fpsRatio = mp4Fps / fps;
         fpsRatio = round(fpsRatio, 3);

@@ -9,3 +9,9 @@ commands:
   cinema:
     description: 'Lets you modify the cinemas.'
     usage: ''
+  movie:
+    description: 'Lets you modify the movies.'
+    usage: ''
+  prepareMovie:
+    description: 'Lets you prepare a movie.'
+    usage: ''

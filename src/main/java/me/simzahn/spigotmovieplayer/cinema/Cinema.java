@@ -1,14 +1,13 @@
 package me.simzahn.spigotmovieplayer.cinema;
 
 import me.simzahn.spigotmovieplayer.Main;
-import me.simzahn.spigotmovieplayer.Resolution;
+import me.simzahn.spigotmovieplayer.movie.Resolution;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -16,7 +15,8 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Represents a cinema *  is a cuboid with a screen on one sidees
+ * Represents a cinema
+ *  is a cuboid with a screen on one sides
  */
 public class Cinema {
 

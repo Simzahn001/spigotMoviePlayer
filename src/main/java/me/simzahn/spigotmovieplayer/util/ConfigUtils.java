@@ -21,7 +21,11 @@ public class ConfigUtils {
 
         if (!customConfigFile.exists()) {
             customConfigFile.getParentFile().mkdirs();
-            Main.getPlugin().saveResource("custom.yml", false);
+            try {
+                customConfigFile.createNewFile();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
 
         return YamlConfiguration.loadConfiguration(customConfigFile);
